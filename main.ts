@@ -3,11 +3,11 @@
 
 import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 
-console.log("smol monitor has started");
-
 const USER_AGENT = "llama-api-monitor-smol";
 const MONITOR_WEBHOOK = Deno.env.get("MONITOR_WEBHOOK") || "";
 const INTERVAL = Deno.env.get("INTERVAL") || "15";
+
+console.log(`smol monitor has started, interval: ${INTERVAL} minutes`);
 
 const urls = [
   // HTML
