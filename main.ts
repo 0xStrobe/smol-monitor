@@ -3,10 +3,11 @@
 
 import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 
-console.log("smol monitor started");
+console.log("smol monitor has started");
 
-const USER_AGENT = "llama-api-monitor-test";
+const USER_AGENT = "llama-api-monitor-smol";
 const MONITOR_WEBHOOK = Deno.env.get("MONITOR_WEBHOOK") || "";
+const INTERVAL = Deno.env.get("INTERVAL") || "15";
 
 const urls = [
   // HTML
@@ -113,8 +114,6 @@ const checkUrls = async () => {
     })
   );
 
-  console.log(results);
-
   const expired = results.filter((result) => result.isExpired);
   if (expired.length > 0) {
     const message = expired.map((result) => result.message).join("\n--------------------\n");
@@ -127,7 +126,7 @@ const checkUrls = async () => {
 
 const main = async () => {
   await checkUrls();
-  setInterval(checkUrls, 1000 * 60 * 15);
+  setInterval(checkUrls, 1000 * 60 * Number(INTERVAL));
 };
 
 main();
