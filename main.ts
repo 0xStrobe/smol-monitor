@@ -51,7 +51,7 @@ const sendMessage = async (message: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      content: message,
+      content: "```\n" + message + "\n```",
     }),
   });
   return response;
@@ -99,28 +99,31 @@ const checkUrl = async (url: string) => {
 };
 
 const checkUrls = async () => {
-  console.log("");
-  console.log("========= checking urls =========");
-  console.log(new Date().toUTCString());
-  console.log("");
-  const results = await Promise.all(
-    urls.map(async (url) => {
-      await checkUrl(url);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      await checkUrl(url);
-      await new Promise((resolve) => setTimeout(resolve, 13000));
-      const res = await checkUrl(url);
-      return res;
-    })
-  );
+  try {
+    const startupMessage = "========= checking urls =========\n" + new Date().toUTCString();
+    console.log(startupMessage);
+    // await sendMessage(startupMessage);
+    const results = await Promise.all(
+      urls.map(async (url) => {
+        await checkUrl(url);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await checkUrl(url);
+        await new Promise((resolve) => setTimeout(resolve, 13000));
+        const res = await checkUrl(url);
+        return res;
+      })
+    );
 
-  const expired = results.filter((result) => result.isExpired);
-  if (expired.length > 0) {
-    const message = expired.map((result) => result.message).join("\n--------------------\n");
-    await sendMessage(message);
-    console.log(message);
-  } else {
-    console.log("all good");
+    const expired = results.filter((result) => result.isExpired);
+    if (expired.length > 0) {
+      const message = expired.map((result) => result.message).join("\n--------------------\n");
+      await sendMessage(message);
+      console.log(message);
+    } else {
+      console.log("all good");
+    }
+  } catch (e) {
+    console.error(e);
   }
 };
 
