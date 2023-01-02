@@ -117,13 +117,14 @@ const checkUrls = async () => {
     const expired = results.filter((result) => result.isExpired);
     if (expired.length > 0) {
       const message = expired.map((result) => result.message).join("\n--------------------\n");
-      await sendMessage(message);
       console.log(message);
+      await sendMessage(message);
     } else {
       console.log("all good");
     }
   } catch (e) {
     console.error(e);
+    await sendMessage(e.message.split("\n")[0] || e.message);
   }
 };
 
